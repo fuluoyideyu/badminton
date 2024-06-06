@@ -57,14 +57,14 @@ public class CityOfOttawaBooking {
     private static long getInitialDelayToNextWednesday6PM() {
         ZoneId zoneId = ZoneId.of("America/New_York");
         ZonedDateTime now = ZonedDateTime.now(zoneId);
-        ZonedDateTime nextWednesday = now.with(TemporalAdjusters.nextOrSame(DayOfWeek.WEDNESDAY)).withHour(18).withMinute(0).withSecond(0).withNano(10);
+        ZonedDateTime nextWednesday = now.with(TemporalAdjusters.nextOrSame(DayOfWeek.WEDNESDAY)).withHour(18).withMinute(0).withSecond(0).withNano(100);
 
         if (now.isAfter(nextWednesday)) {
             nextWednesday = nextWednesday.plusWeeks(1);
         }
 
         Duration duration = Duration.between(now, nextWednesday);
-        return duration.getNano();
+        return duration.toNanos();
     }
 
     public void openBrowserAndWait() throws IOException {
@@ -76,7 +76,6 @@ public class CityOfOttawaBooking {
         }
         driver.get("https://reservation.frontdesksuite.ca/rcfs/nepeansportsplex/Home/Index?Culture=en&PageId=b0d362a1-ba36-42ae-b1e0-feefaf43fe4c&ShouldStartReserveTimeFlow=False&ButtonId=00000000-0000-0000-0000-000000000000");
         bookingUrl = "https://reservation.frontdesksuite.ca/" + targetDiv.parent().attr("href");
-
     }
 
 
