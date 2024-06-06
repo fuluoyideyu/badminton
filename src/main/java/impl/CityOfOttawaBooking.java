@@ -21,6 +21,8 @@ import java.util.concurrent.TimeUnit;
 public class CityOfOttawaBooking {
     WebDriver driver;
     String bookingUrl;
+    String date = "//*[@aria-label='7:30 PM Saturday June 8, 2024']";
+    String type = "div.content:contains(Badminton)";
 
     public WebDriver getDriver() {
         return driver;
@@ -31,7 +33,7 @@ public class CityOfOttawaBooking {
     }
 
     public static void main(String[] args) {
-        System.setProperty("webdriver.chrome.driver", "/Users/chengguangyu/Downloads/driver/chromedriver");
+        System.setProperty("webdriver.chrome.driver", "C:\\chromedriver.exe");
         long initialDelay = getInitialDelayToNextWednesday6PM();
         CityOfOttawaBooking booking = new CityOfOttawaBooking();
         ChromeOptions options = new ChromeOptions();
@@ -57,7 +59,7 @@ public class CityOfOttawaBooking {
     private static long getInitialDelayToNextWednesday6PM() {
         ZoneId zoneId = ZoneId.of("America/New_York");
         ZonedDateTime now = ZonedDateTime.now(zoneId);
-        ZonedDateTime nextWednesday = now.with(TemporalAdjusters.nextOrSame(DayOfWeek.WEDNESDAY)).withHour(18).withMinute(0).withSecond(0).withNano(100);
+        ZonedDateTime nextWednesday = now.with(TemporalAdjusters.nextOrSame(DayOfWeek.THURSDAY)).withHour(18).withMinute(0).withSecond(0).withNano(100);
 
         if (now.isAfter(nextWednesday)) {
             nextWednesday = nextWednesday.plusWeeks(1);
@@ -69,7 +71,7 @@ public class CityOfOttawaBooking {
 
     public void openBrowserAndWait() throws IOException {
         Document doc = Jsoup.connect("https://reservation.frontdesksuite.ca/rcfs/nepeansportsplex/Home/Index?Culture=en&PageId=b0d362a1-ba36-42ae-b1e0-feefaf43fe4c&ShouldStartReserveTimeFlow=False&ButtonId=00000000-0000-0000-0000-000000000000").get();
-        Element targetDiv = doc.selectFirst("div.content:contains(HIIT)"); // Change activity name as needed
+        Element targetDiv = doc.selectFirst(type); // Change activity name as needed
 
         if (targetDiv == null) {
             return;
@@ -106,7 +108,7 @@ public class CityOfOttawaBooking {
                 WebElement expandBtn = lastChild.findElement(By.className("title-padded"));
                 expandBtn.click();
 
-                WebElement timeBtn = lastChild.findElement(By.xpath("//*[@aria-label='10:00 AM Friday June 7, 2024']")); // Modify timeslot as needed
+                WebElement timeBtn = lastChild.findElement(By.xpath(date)); // Modify timeslot as needed
                 timeBtn.click();
 
                 driver.findElement(By.id("telephone")).sendKeys("3437771827"); // Modify phone number as needed
