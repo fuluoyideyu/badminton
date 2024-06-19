@@ -21,12 +21,10 @@ import java.util.concurrent.TimeUnit;
 public class CityOfOttawaBooking {
     WebDriver driver;
     String bookingUrl;
-    String date = "//*[@aria-label='7:30 PM Saturday June 8, 2024']";
+    String date = "//*[@aria-label='6:00 PM Friday June 21, 2024']";
     String type = "div.content:contains(Badminton)";
-
-    public WebDriver getDriver() {
-        return driver;
-    }
+    String richcraft = "https://reservation.frontdesksuite.ca/rcfs/richcraftkanata/Home/Index?Culture=en&PageId=b3b9b36f-8401-466d-b4c4-19eb5547b43a&ShouldStartReserveTimeFlow=False&ButtonId=00000000-0000-0000-0000-000000000000";
+    String nepean = "https://reservation.frontdesksuite.ca/rcfs/nepeansportsplex/Home/Index?Culture=en&PageId=b0d362a1-ba36-42ae-b1e0-feefaf43fe4c&ShouldStartReserveTimeFlow=False&ButtonId=00000000-0000-0000-0000-000000000000";
 
     public void setDriver(WebDriver driver) {
         this.driver = driver;
@@ -59,7 +57,7 @@ public class CityOfOttawaBooking {
     private static long getInitialDelayToNextWednesday6PM() {
         ZoneId zoneId = ZoneId.of("America/New_York");
         ZonedDateTime now = ZonedDateTime.now(zoneId);
-        ZonedDateTime nextWednesday = now.with(TemporalAdjusters.nextOrSame(DayOfWeek.THURSDAY)).withHour(18).withMinute(0).withSecond(0).withNano(100);
+        ZonedDateTime nextWednesday = now.with(TemporalAdjusters.nextOrSame(DayOfWeek.WEDNESDAY)).withHour(18).withMinute(0).withSecond(0).withNano(0).minus(Duration.ofMillis(15));
 
         if (now.isAfter(nextWednesday)) {
             nextWednesday = nextWednesday.plusWeeks(1);
@@ -70,13 +68,14 @@ public class CityOfOttawaBooking {
     }
 
     public void openBrowserAndWait() throws IOException {
-        Document doc = Jsoup.connect("https://reservation.frontdesksuite.ca/rcfs/nepeansportsplex/Home/Index?Culture=en&PageId=b0d362a1-ba36-42ae-b1e0-feefaf43fe4c&ShouldStartReserveTimeFlow=False&ButtonId=00000000-0000-0000-0000-000000000000").get();
+
+        Document doc = Jsoup.connect(nepean).get();
         Element targetDiv = doc.selectFirst(type); // Change activity name as needed
 
         if (targetDiv == null) {
             return;
         }
-        driver.get("https://reservation.frontdesksuite.ca/rcfs/nepeansportsplex/Home/Index?Culture=en&PageId=b0d362a1-ba36-42ae-b1e0-feefaf43fe4c&ShouldStartReserveTimeFlow=False&ButtonId=00000000-0000-0000-0000-000000000000");
+        driver.get(nepean);
         bookingUrl = "https://reservation.frontdesksuite.ca/" + targetDiv.parent().attr("href");
     }
 
@@ -91,7 +90,7 @@ public class CityOfOttawaBooking {
                     return;
                 }
                 numOfPplInputField.clear();
-                numOfPplInputField.sendKeys("1");
+                numOfPplInputField.sendKeys("2");
                 driver.findElement(By.id("submit-btn")).click();
             } catch (NoSuchElementException e) {
                 return;
@@ -113,7 +112,7 @@ public class CityOfOttawaBooking {
 
                 driver.findElement(By.id("telephone")).sendKeys("3437771827"); // Modify phone number as needed
                 driver.findElement(By.id("email")).sendKeys("yuchengguang2014@gmail.com"); // Modify email as needed
-                driver.findElements(new By.ByCssSelector("input[type='text']")).getFirst().sendKeys("Chengguang Yu");
+                driver.findElements(new By.ByCssSelector("input[type='text']")).getFirst().sendKeys("Yu");
 
                 Thread.sleep(150);
                 driver.findElement(By.id("submit-btn")).click();
